@@ -1,0 +1,16 @@
+ {{ define "warning_msg" }}
+
+        <div x-data="{ show: true }" x-show="show"
+            class="bg-yellow-100 border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Warning!</strong>
+            <span class="block sm:inline">{{.Warning}}</span>
+            <span @click="show = false" class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20">
+                    <title>Close</title>
+                    <path
+                        d="M14.348 14.849a1 1 0 01-1.415 0L10 11.415l-2.933 2.934a1 1 0 01-1.414-1.415l2.933-2.934-2.933-2.934a1 1 0 011.414-1.415L10 8.586l2.933-2.934a1 1 0 011.414 1.415L11.415 10l2.933 2.934a1 1 0 010 1.415z" />
+                </svg>
+            </span>
+        </div>
+{{ end }}

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link href="/kubestatus/web/assets/css/style.css" rel="stylesheet" />
+        <script src="//code.iconify.design/1/1.0.6/iconify.min.js"></script>
+    </head>
+
+    <body class="relative bg-gray-50 overflow-hidden max-h-screen">
+        <header class="fixed right-0 top-0 left-60 bg-gray-100 py-3 px-4 h-16">
+            <div class="max-w-4xl mx-auto">
+                <!--Menü Oben-->
+                <div class="flex items-center justify-between">
+                    <div>sdfskdafjöskj</div>
+                    <div class="text-lg font-bold">Kubestatus</div>
+                    <div>hfgsdfgs</div>
+                </div>
+            </div>
+        </header>
+        <!--Menü Links-->
+        <aside class="fixed inset-y-0 left-0 bg-white shadow-md max-h-screen w-60">
+            <div class="flex flex-col justify-between h-full">
+                <div class="flex-grow">
+                    <div class="px-4 py-6 text-center border-b">
+                        <h1 class="text-xl font-bold leading-none">
+                            <span class="text-yellow-700">KubeStatus</span> App
+                        </h1>
+                    </div>
+                    <div class="p-4">
+                        <ul class="space-y-1">
+                            <li>
+                                <a href="javascript:void(0)"
+                                    class="flex items-center bg-gray-200 rounded-xl font-bold text-sm text-yellow-900 py-3 px-4">Menüpunkt1
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)"
+                                    class="flex bg-white hover:bg-yellow-50 rounded-xl font-bold text-sm text-gray-900 py-3 px-4">Menüpinkt2
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)"
+                                    class="flex bg-white hover:bg-yellow-50 rounded-xl font-bold text-sm text-gray-900 py-3 px-4">Menüpunkt3
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)"
+                                    class="flex bg-white hover:bg-yellow-50 rounded-xl font-bold text-sm text-gray-900 py-3 px-4">
+                                    Menüpunkt4
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="p-4">
+                    <span class="font-bold text-sm ml-2">Nochwas</span>
+                </div>
+            </div>
+        </aside>
+
+        <!--Contetnt-->
+        <main class="ml-60 pt-16 max-h-screen overflow-auto">
+            <div class="px-6 py-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white rounded-3xl p-8 mb-5">
+                        <h1 class="text-3xl font-bold mb-10">Welcome to KubeStatus App</h1>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-stretch">
+                                <div class="text-gray-400 text-xs">Text<br />mehr Text</div>
+                                <div class="h-100 border-l mx-4"></div>
+                                <div class="text-gray-400 text-xs">Text<br />mehr Text</div>
+                            </div>
+                            <div class="flex items-center gap-x-2">
+                                Hier könnte Text stehen
+                            </div>
+                        </div>
+
+                        <hr class="my-10" />
+
+                        <div class="grid grid-cols-2 gap-x-20">
+                            <div>
+                                <h2 class="text-2xl font-bold mb-4">Status</h2>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="col-span-2">
+                                        <div class="p-4 bg-green-100 rounded-xl drop-shadow-lg">
+                                            <div class="font-bold text-xl text-gray-800 leading-none">
+                                                Nodes im Cluster
+                                            </div>
+                                            <div class="mt-5">
+                                                <button type="button"
+                                                    class="inline-flex items-center justify-center py-5 px-5 rounded-xl bg-white text-gray-800 hover:text-green-500 text-xl font-bold transition">
+                                                    20
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 bg-yellow-100 rounded-xl text-gray-800 drop-shadow-lg">
+                                        <div class="font-bold text-2xl leading-none">20</div>
+                                        <div class="mt-2">Noch irgend eine Zahl</div>
+                                    </div>
+                                    <div class="p-4 bg-yellow-100 rounded-xl text-gray-800 drop-shadow-lg">
+                                        <div class="font-bold text-2xl leading-none">5,5</div>
+                                        <div class="mt-2">Wichtige Zahl</div>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <div class="p-4 bg-purple-100 rounded-xl text-gray-800 drop-shadow-lg">
+                                            <div class="font-bold text-xl leading-none">
+                                                Noch mehr Wichtige Zahlen
+                                            </div>
+                                            <div class="mt-2">5 of 8 completed</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center p-4 bg-white shadow rounded-lg">
+                                        <div
+                                            class="inline-flex flex-shrink-0 items-center justify-center  h-16 w-16 text-green-600 bg-green-100 rounded-full mr-6">
+                                            <svg aria-hidden="true" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor" class="h-6 w-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <span class="block text-2xl font-bold">6.8</span>
+                                            <span class="block text-gray-500">Average mark</span>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold mb-4">
+                                    Hier gibt es noch informationen
+                                </h2>
+
+                                <div class="space-y-4">
+                                    <div class="p-4 bg-white border rounded-xl text-gray-800 space-y-2 drop-shadow-lg">
+                                        <div class="flex justify-between">
+                                            <div class="text-gray-400 text-xs">Number 10</div>
+                                            <div class="text-gray-400 text-xs">20%</div>
+                                        </div>
+                                        <a href="javascript:void(0)"
+                                            class="font-bold hover:text-yellow-800 hover:underline">Beschreibung</a>
+                                        <div class="text-sm text-gray-600 flex">
+                                            <span class="iconify" data-icon="mdi-warning"></span>
+                                            <span class="pl-1">Hier gibt es noch Aufgaben</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 bg-white border rounded-xl text-gray-800 space-y-2 drop-shadow-lg">
+                                        <div class="flex justify-between">
+                                            <div class="text-gray-400 text-xs">hier noch</div>
+                                            <div class="text-gray-400 text-xs">50 MByte/s</div>
+                                        </div>
+                                        <a href="javascript:void(0)"
+                                            class="font-bold hover:text-yellow-800 hover:underline">Irgend ein Wert</a>
+                                        <div class="flex flex-row">
+                                            <span class="iconify" data-icon="mdi-card-account-mail-outline"></span>
+                                            <div class="text-sm text-gray-600 pl-1">Mail Link</div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="p-4 bg-white border rounded-xl text-gray-800 space-y-2 drop-shadow-lg grid justify-center">
+                                        <div class="flex justify-between justify-self-stretch">
+                                            <div class="text-gray-400 text-xs">App</div>
+                                            <div class="text-gray-400 text-xs">2h</div>
+                                        </div>
+                                        <div class="flex justify-between justify-self-stretch">
+                                            <div class="text-gray-400 text-xs">App</div>
+                                            <div class="text-gray-400 text-xs">2h</div>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <div class="text-gray-400 text-xs">App</div>
+                                            <div class="text-gray-400 text-xs">2h</div>
+                                        </div>
+                                        <div id="chart1" class="h-52 w-52"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+    <script src="js/app.js" type="text/javascript"></script>
+
+</html>

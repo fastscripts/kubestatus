@@ -1,0 +1,7 @@
+{
+	"Port" : "8080",
+	"MetricsPort" :"8180",
+	"Devmode" : true,
+    "KubeConfigPath" : "/home/micha/.kube/test_config",
+    "KubeAccessType" : "outcluster"
+}

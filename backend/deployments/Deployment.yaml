@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubestatus
+  labels:
+    workload.user.cattle.io/workloadselector: apps.deployment-mku-kubestatus
+    #  key: string
+  namespace: kubestatus
+spec:
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: apps.deployment-mku-kubestatus
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: apps.deployment-mku-kubestatus
+      namespace: kubestatus
+    spec:
+      containers:
+        - image: swm-docker-registry.artifactory.intra.swm.de/mku/kubestatus:1
+          imagePullPolicy: Always
+          name: kubestatus
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+              _serviceType: ClusterIP
+            - containerPort: 8081
+              name: monitor
+              protocol: TCP
+              _serviceType: ClusterIP
+          resources:
+            limits:
+              cpu: 5m
+              memory: 32Mi
+            requests:
+              cpu: 1m
+              memory: 16Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            runAsUser: 1000
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      serviceAccount: kubestatus
+      serviceAccountName: kubestatus
+      terminationGracePeriodSeconds: 30
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate

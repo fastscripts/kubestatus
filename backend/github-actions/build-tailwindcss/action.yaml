@@ -1,0 +1,22 @@
+name: build css file with TailwindCss
+description: 'build application css file with tailwindcss'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: node and npm install
+      shell: bash
+      run: |
+        sudo apt-get install -y nodejs npm
+
+    - name: tailwindcss install
+      shell: bash
+      run: |
+        cd kubestatus
+        npm install
+    
+    - name: build css file
+      shell: bash
+      run: |
+        cd kubestatus
+        npm run build_css

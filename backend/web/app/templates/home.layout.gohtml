@@ -1,0 +1,12 @@
+{{define "homepagelayout" }}
+<!DOCTYPE html>
+<html lang="de">
+    {{template "header" .}}
+    <body class="bg-gray-50">
+    {{block "homepage" .}}
+    {{end}}
+    </body>
+    {{template "footer" .}}
+</html>
+{{end}}
+

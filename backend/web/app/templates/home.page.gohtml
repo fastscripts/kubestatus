@@ -1,0 +1,105 @@
+{{template "homepagelayout" .}}
+{{define "homepage"}}
+<!-- Begin Page Content -->
+
+<!-- Page Menue Header -->
+<header class="fixed right-0 top-0 left-60 bg-gray-10 py-3 px-4 h-16">
+    <div class="max-w-4xl mx-auto">
+        <!--Menü Oben-->
+        <!--div class="flex items-center justify-between">
+            <div>sdfskdafjöskj</div>
+        <div class="text-lg font-bold">Kubestatus</div>
+        <div>hfgsdfgs</div>
+        </div-->
+        {{if .Error }}
+            {{ template "error_msg" . }}
+        {{ end }}
+
+        {{if .Warning}}
+            {{ template "warning_msg" . }}
+        {{ end }}
+
+        {{if .Flash}}
+            {{ template "flash_msg" . }}
+        {{ end }}
+
+    </div>
+</header>
+<!--Menü Links-->
+<aside class="fixed inset-y-0 left-0 bg-gray-100 shadow-md max-h-screen w-60">
+     {{ template "sidebar" . }}
+</aside>
+
+
+
+{{$rj := index .Data "json"}}
+<!--Content-->
+<main class="ml-60 pt-16 max-h-screen overflow-scroll" x-data='{{$rj}}'>
+    <div class="px-6 py-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="bg-white rounded-3xl p-8 mb-5">
+                <h1 class="text-3xl font-bold mb-10 text-center">Welcome to KubeStatus App</h1>
+                <!-- Spacer-->
+                <hr class="my-10" />
+
+                <div class="grid grid-cols-3 gap-4 gap-x-20">
+                    <!-- Spalte 1-->
+                    <div class="col-span-1">
+                        <h2 class="text-2xl font-bold mb-4">Status</h2>
+                        <div class="grid grid-cols-2 gap-4">
+
+                            <!-- Nodes im Cluster-->
+                            <div class="col-span-2">
+                                <div class="p-4 bg-green-100 rounded-xl drop-shadow-lg">
+                                    <div class="font-bold text-xl text-gray-800 leading-none">
+                                        Nodes im Cluster
+                                    </div>
+                                    <div class="mt-5">
+                                        <span
+                                            class="inline-flex items-center justify-center py-5 px-5 rounded-xl bg-white text-gray-800 hover:text-green-500 text-xl font-bold transition"
+                                            x-text="node_count"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- CPUs Verfügbar -->
+                            <div class="p-4 bg-yellow-100 rounded-xl text-gray-800 drop-shadow-lg">
+                                <div class="font-bold text-2xl leading-none" x-text="cpu.capacity">20</div>
+                                <div class="mt-2">MilliCPU verfügbar</div>
+                            </div>
+                            <!--CPUs in Benutzung-->
+                            <div class="p-4 bg-yellow-100 rounded-xl text-gray-800 drop-shadow-lg">
+                                <div class="font-bold text-2xl leading-none" x-text="cpu.used">5,5</div>
+                                <div class="mt-2">MilliCPU benutzt</div>
+                            </div>
+                            <!-- RAM Verfügbar -->
+                            <div class="p-4 bg-yellow-100 rounded-xl text-gray-800 drop-shadow-lg">
+                                <div class="font-bold text-2xl leading-none"><span x-text="memory.capacity"></span>
+                                    MByte</div>
+                                <div class="mt-2">RAM verfügbar</div>
+                            </div>
+                            <!--RAM in Benutzung-->
+                            <div class="p-4 bg-yellow-100 rounded-xl text-gray-800 drop-shadow-lg">
+                                <div class="font-bold text-2xl leading-none"><span x-text="memory.used"></span> MByte
+                                </div>
+                                <div class="mt-2">RAM benutzt</div>
+                            </div>                        
+                        </div>
+                    </div>
+                    <!-- Ende Spalte1 -->
+                    <!-- Spalte 2-->
+                    <div class="col-span-2 ">
+                        <div class="space-y-4">
+                            <h2 class="text-2xl font-bold mb-4">&nbsp; </h2>
+                            {{ template "cpu_gauge" . }}
+                            {{ template "ram_gauge" . }}
+                        </div>
+                    </div>
+                    <!--Ende Spalte2 -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+{{end}}
+

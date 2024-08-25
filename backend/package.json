@@ -1,0 +1,19 @@
+{
+  "name": "kubestatus",
+  "version": "1.0.0",
+  "description": "kubestatus",
+  "main": "index.js",
+  "scripts": {
+    "build_css": "tailwindcss build -o web/assets/css/style.css",
+    "watch_css": "tailwindcss build -o web/assets/css/style.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ext-github.swm.de/SWM/rancher-sources/kubestatus"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tailwindcss": "^3.4.9"
+  }
+}
