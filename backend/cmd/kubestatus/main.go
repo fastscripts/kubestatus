@@ -1,13 +1,17 @@
 package main
 
 import (
+	"log"
+
 	"ext-github.swm.de/SWM/rancher-sources/kubestatus/internal/config"
 )
 
 const appName = "kubestatus"
 
+var app = &App{}
+
 func main() {
-	app := initialize()
+	app = initialize()
 	run(app)
 }
 
@@ -15,7 +19,8 @@ func initialize() *App {
 	appConfig := config.AppConfig{
 		KubeAccessType: "incluster",
 		KubeConfigPath: ".kube/config",
-		Devmode:        true,
+		TemplatePath:   "./web/app/templates",
+		Devmode:        false,
 		Port:           8080,
 		MetricsPort:    8081,
 	}
@@ -31,6 +36,19 @@ func initialize() *App {
 	app.Config.LoadJSONConfiguration(app.ConfigPath)
 	app.Config.LoadENVConfiguration()
 
+	//@toto defaults werden überschrieben
+	app.Config.TemplatePath = "./web/app/templates"
+
+	// Initialize Template Cache wenn nicht im Devmode
+	if !app.Config.Devmode {
+		var err error
+		app.TemplateCache, err = NewTemplateCache(app.Config.TemplatePath)
+		if err != nil {
+			log.Fatalf("Error could not init template cache %v\n", err)
+		}
+	} else {
+		app.TemplateCache = nil
+	}
 	// @todo accesstype wird überschreiben auf null auch wen kein Konfigfile vorhanden ist
 	/* 	app.Config.KubeAccessType = "incluster"
 	   	var err error

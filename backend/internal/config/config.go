@@ -16,6 +16,7 @@ type AppConfig struct {
 	Devmode        bool   `json:"Devmode" env:"DEVMODE"`
 	KubeAccessType string `json:"KubeAccessType" env:"KUBE_ACCESS_TYPE"`
 	KubeConfigPath string `json:"KubeConfigPath" env:"KUBE_CONFIG_PATH"`
+	TemplatePath   string `json:"TemplatePath" env:"TEMPLATE_PATH"`
 }
 
 func (app *AppConfig) LoadJSONConfiguration(file string) {

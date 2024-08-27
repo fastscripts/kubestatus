@@ -51,11 +51,7 @@ func NewWebserver() *Webserver {
 	ws.echoWebserver.Static("/vendor", "web/assets/vendor")
 
 	// load templates
-	ws.echoWebserver.Renderer = &Renderer{
-		// Templates beim Programmstart parsen
-		//@todo: nur im Prod mode
-		//templates: template.Must(template.ParseGlob("cmd/web/templates/*.gohtml")),
-	}
+	ws.echoWebserver.Renderer = &Renderer{}
 	return ws
 
 }
