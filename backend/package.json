@@ -4,8 +4,8 @@
   "description": "kubestatus",
   "main": "index.js",
   "scripts": {
-    "build_css": "tailwindcss build -o web/assets/css/style.css",
-    "watch_css": "tailwindcss build -o web/assets/css/style.css --watch"
+    "build_css": "tailwindcss build -o web/assets/css/app.css",
+    "watch_css": "tailwindcss build -o web/assets/css/app.css --watch"
   },
   "repository": {
     "type": "git",

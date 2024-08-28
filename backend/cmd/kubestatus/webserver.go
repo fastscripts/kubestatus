@@ -9,7 +9,6 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-
 type Webserver struct {
 	Port           int
 	PrometheusPort int
@@ -51,6 +50,8 @@ func NewWebserver() *Webserver {
 	ws.echoWebserver.Static("/js", "web/assets/js")
 	ws.echoWebserver.Static("/data", "web/assets/data")
 	ws.echoWebserver.Static("/vendor", "web/assets/vendor")
+
+	ws.echoWebserver.Static("/webfonts", "web/assets/webfonts")
 
 	// load templates
 	ws.echoWebserver.Renderer = &Renderer{}
