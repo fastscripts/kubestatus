@@ -1,0 +1,48 @@
+{{ define "centerModal" }}
+
+<div x-data="{'isModalOpen': false}" x-on:keydown.escape="isModalOpen=false">
+  <button
+    x-on:click="isModalOpen = true"
+    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+  >
+    Open Modal
+  </button>
+
+  <div
+    class="fixed size-full top-0 left-0 z-10 bg-gray-500 bg-opacity-20"
+    role="dialog"
+    tabindex="-1"
+    x-show="isModalOpen"
+    x-on:click.away="isModalOpen = false"
+    x-cloak
+    x-transition
+  >
+    <div
+      class="fixed top-1/3 left-1/3 origin-center rounded-md shadow-lg bg-gray-100 w-1/3"
+    >
+      <div class="relative m-2 size-auto items-center flex min-h-4">
+        <div class="relative flex p-5 size-full flex-col">
+          <div class="border-b p-2 pb-3 pt-0 mb-4">
+            <div class="flex justify-between items-center">
+              Modal header
+              <span
+                class="cursor-pointer px-2 py-1 rounded-full bg-white hover:bg-gray-500"
+                x-on:click="isModalOpen=false"
+              >
+                <i class="fas fa-times"></i>
+              </span>
+            </div>
+          </div>
+
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint
+            impedit placeat nulla accusamus tempora, error inventore, ducimus
+            est soluta voluptatem eligendi, saepe ullam non ratione laboriosam
+            itaque cumque? Eaque, excepturi.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{ end }}
