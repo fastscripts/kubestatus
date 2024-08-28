@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"text/template"
@@ -51,14 +52,16 @@ func (renderer *Renderer) Render(w io.Writer, templateName string, data interfac
 
 		return renderer.templates.ExecuteTemplate(w, templateName, data)
 	} else {
-		// Template aus Cache laden
-		/*
-			tc, err := NewTemplateCache("./web/app/templates/")
+
+		// if template cache is not initialized, initialize it
+		if app.TemplateCache == nil {
+			var err error
+			app.TemplateCache, err = NewTemplateCache(app.Config.TemplatePath)
 			if err != nil {
+				log.Fatalf("Error could not init template cache %v\n", err)
 				return err
 			}
-		*/
-
+		}
 		templ, ok := app.TemplateCache[templateName]
 		if !ok {
 			fmt.Println("The template  ", templateName, " does not exist")
@@ -73,13 +76,13 @@ func (renderer *Renderer) Render(w io.Writer, templateName string, data interfac
 func NewTemplateCache(templatePath string) (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob(templatePath + "*.page.gohtml")
+	pages, err := filepath.Glob(templatePath + "/*.page.gohtml")
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err
 	}
 
-	fmt.Println(len(pages), " page templates found")
+	//fmt.Println(len(pages), " page templates found")
 	// Loop through all the page-level templates
 	for _, page := range pages {
 		name := filepath.Base(page)
@@ -89,17 +92,17 @@ func NewTemplateCache(templatePath string) (map[string]*template.Template, error
 			return nil, err
 		}
 
-		templ, err = templ.ParseGlob(templatePath + "*.layout.gohtml")
+		templ, err = templ.ParseGlob(templatePath + "/*.layout.gohtml")
 		if err != nil {
 			return nil, err
 		}
 
-		templ, err = templ.ParseGlob(templatePath + "*.partial.gohtml")
+		templ, err = templ.ParseGlob(templatePath + "/*.partial.gohtml")
 		if err != nil {
 			return nil, err
 		}
 
-		componentsPath := templatePath + "components/"
+		componentsPath := templatePath + "/components/"
 		fileNamePattern := "*.gohtml"
 
 		err = filepath.Walk(componentsPath,
@@ -116,6 +119,7 @@ func NewTemplateCache(templatePath string) (map[string]*template.Template, error
 					}
 					if match {
 						templ, err = templ.ParseGlob(path)
+						//fmt.Println("Loading component template: ", path)
 						if err != nil {
 							fmt.Println(err.Error())
 							return err

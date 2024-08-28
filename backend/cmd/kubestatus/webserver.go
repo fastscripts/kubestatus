@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+
 type Webserver struct {
 	Port           int
 	PrometheusPort int
@@ -25,6 +26,7 @@ func NewWebserver() *Webserver {
 	// Ccreate Prometheus server and Middleware
 	ws.echoPrometheus = echo.New()
 	ws.echoPrometheus.HideBanner = true
+
 	prom := prometheus.NewPrometheus("echo", nil)
 
 	ws.echoWebserver = echo.New()
