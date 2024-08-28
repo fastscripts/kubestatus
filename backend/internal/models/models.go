@@ -9,6 +9,7 @@ type TemplateData struct {
 	Flash     string
 	Warning   string
 	Error     string
+	Success   string
 }
 
 type Resources struct {

@@ -17,6 +17,10 @@
             {{ template "flash_msg" . }}
         {{ end }}
 
+        {{if .Success}}
+            {{ template "success_msg" . }}
+        {{ end }}
+
 </header-->
 
 <div class="flex flex-1">
