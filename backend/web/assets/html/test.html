@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+  </head>
+  <body style="height: 100%; margin: 0">
+    <div id="main" style="width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+      var chartDom = document.getElementById("main");
+      var myChart = echarts.init(chartDom);
+
+      var hexagonSideLength = 20;
+      var hexagonHeight = Math.sqrt(3) * hexagonSideLength;
+
+      // Beispiel-Daten
+      var data = [
+        { x: 0, y: 0, value: 10, link: "https://example.com/0-0" },
+        { x: 1, y: 0, value: 20, link: "https://example.com/1-0" },
+        { x: 0, y: 1, value: 30, link: "https://example.com/0-1" },
+        { x: 1, y: 1, value: 40, link: "https://example.com/1-1" },
+        { x: 2, y: 0, value: 50, link: "https://example.com/2-0" },
+        { x: 2, y: 1, value: 60, link: "https://example.com/2-1" },
+        { x: 3, y: 0, value: 25, link: "https://example.com/3-0" },
+        { x: 3, y: 1, value: 45, link: "https://example.com/3-1" },
+      ];
+
+      var maxDataX = Math.max(...data.map((d) => d.x));
+      var maxDataY = Math.max(...data.map((d) => d.y));
+
+      // Berechnung der Verschiebung, um das Zentrum der Grafik zu finden
+      var shiftX =
+        (myChart.getWidth() - (maxDataX * 1.5 + 1) * hexagonSideLength) / 2;
+      var shiftY =
+        (myChart.getHeight() - (maxDataY * 2 + 1) * hexagonHeight) / 2;
+
+      function getHexagonPoints(cx, cy, sideLength) {
+        return [
+          [cx + sideLength * Math.cos(0), cy + sideLength * Math.sin(0)],
+          [
+            cx + sideLength * Math.cos(Math.PI / 3),
+            cy + sideLength * Math.sin(Math.PI / 3),
+          ],
+          [
+            cx + sideLength * Math.cos((2 * Math.PI) / 3),
+            cy + sideLength * Math.sin((2 * Math.PI) / 3),
+          ],
+          [
+            cx + sideLength * Math.cos(Math.PI),
+            cy + sideLength * Math.sin(Math.PI),
+          ],
+          [
+            cx + sideLength * Math.cos((4 * Math.PI) / 3),
+            cy + sideLength * Math.sin((4 * Math.PI) / 3),
+          ],
+          [
+            cx + sideLength * Math.cos((5 * Math.PI) / 3),
+            cy + sideLength * Math.sin((5 * Math.PI) / 3),
+          ],
+        ];
+      }
+
+      option = {
+        tooltip: {
+          trigger: "item",
+          formatter: function (params) {
+            return `Wert: ${params.value[2]}`;
+          },
+        },
+        xAxis: {
+          show: false,
+          type: "value",
+          min: 0,
+          max: maxDataX,
+        },
+        yAxis: {
+          show: false,
+          type: "value",
+          min: 0,
+          max: maxDataY,
+        },
+        series: [
+          {
+            type: "custom",
+            renderItem: function (params, api) {
+              var x = api.value(0);
+              var y = api.value(1);
+              var value = api.value(2);
+
+              // Berechne die Mittelpunkte der Hexagons
+              var cx = shiftX + x * 1.5 * hexagonSideLength;
+              var cy =
+                shiftY + y * hexagonHeight + ((x % 2) * hexagonHeight) / 2;
+
+              var hexagonPoints = getHexagonPoints(cx, cy, hexagonSideLength);
+
+              return {
+                type: "polygon",
+                shape: {
+                  points: hexagonPoints,
+                },
+                style: api.style({
+                  fill: echarts.color.modifyHSL(
+                    "#50a3ba",
+                    Math.floor((120 * value) / 60) - 60
+                  ),
+                }),
+              };
+            },
+            encode: {
+              x: 0,
+              y: 1,
+            },
+            data: data.map((item) => [item.x, item.y, item.value]),
+          },
+        ],
+        graphic: data.map(function (item, index) {
+          var x = item.x;
+          var y = item.y;
+
+          // Berechne die Mittelpunkte für die Klickbereiche
+          var cx = shiftX + x * 1.5 * hexagonSideLength;
+          var cy = shiftY + y * hexagonHeight + ((x % 2) * hexagonHeight) / 2;
+
+          var hexagonPoints = getHexagonPoints(cx, cy, hexagonSideLength);
+
+          return {
+            type: "polygon",
+            shape: {
+              points: hexagonPoints,
+            },
+            invisible: false,
+            onclick: function () {
+              window.open(item.link, "_blank");
+            },
+          };
+        }),
+      };
+
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
