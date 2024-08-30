@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+	"sync"
 	"text/template"
 
 	"ext-github.swm.de/SWM/rancher-sources/kubestatus/internal/config"
@@ -14,4 +16,11 @@ type App struct {
 	Config        *config.AppConfig
 	Kube          *kube.Kube
 	TemplateCache map[string]*template.Template
+
+	ErrorChan     chan error
+	ErrorChanDone chan bool
+	Wait          *sync.WaitGroup
+
+	InfoLog  *log.Logger
+	ErrorLog *log.Logger
 }

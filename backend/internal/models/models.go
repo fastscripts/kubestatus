@@ -22,3 +22,28 @@ type ClusterStatus struct {
 	CPU       Resources `json:"cpu"`
 	Memory    Resources `json:"memory"`
 }
+
+type Container struct {
+	Name       string `json:"name,omitempty"`
+	CPU        int    `json:"cpu,omitempty"`
+	MEM        int    `json:"mem,omitempty"`
+	MEMRequest int    `json:"memRequested,omitempty"`
+	CPURequest int    `json:"cpuRequested,omitempty"`
+	MEMLimit   int    `json:"memLimit,omitempty"`
+	CPULimit   int    `json:"cpuLimit,omitempty"`
+}
+
+type Pod struct {
+	Name       string      `json:"name"`
+	Containers []Container `json:"children"`
+}
+
+type Namespace struct {
+	Name string `json:"name"`
+	Pods []Pod  `json:"children"`
+}
+
+type Data struct {
+	Name       string      `json:"name"`
+	Namespaces []Namespace `json:"children"`
+}

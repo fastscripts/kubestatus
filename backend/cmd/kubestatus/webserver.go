@@ -61,7 +61,7 @@ func NewWebserver() *Webserver {
 
 func (ws *Webserver) Start() {
 	go func() {
-		ws.echoPrometheus.Logger.Fatal(ws.echoPrometheus.Start(":" + strconv.Itoa(ws.PrometheusPort)))
+		ws.echoPrometheus.Logger.Info(ws.echoPrometheus.Start(":" + strconv.Itoa(ws.PrometheusPort)))
 	}()
-	ws.echoWebserver.Logger.Fatal(ws.echoWebserver.Start(":" + strconv.Itoa(ws.Port)))
+	ws.echoWebserver.Logger.Info(ws.echoWebserver.Start(":" + strconv.Itoa(ws.Port)))
 }

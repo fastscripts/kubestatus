@@ -543,6 +543,8 @@ module.exports = {
       min: 'min-content',
       max: 'max-content',
       fit: 'fit-content',
+      600: '38rem',
+      800: '50rem',
     }),
     hueRotate: {
       0: '0deg',
@@ -875,6 +877,7 @@ module.exports = {
       72: '18rem',
       80: '20rem',
       96: '24rem',
+
     },
     stroke: ({ theme }) => ({
       none: 'none',
@@ -1042,6 +1045,8 @@ module.exports = {
       min: 'min-content',
       max: 'max-content',
       fit: 'fit-content',
+      600: '38rem',
+      800: '50rem',
     }),
     willChange: {
       auto: 'auto',

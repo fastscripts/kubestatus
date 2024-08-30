@@ -1,6 +1,13 @@
 package main
 
 import (
+	"context"
+	"log"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
+
 	"ext-github.swm.de/SWM/rancher-sources/kubestatus/internal/config"
 )
 
@@ -14,6 +21,14 @@ func main() {
 }
 
 func initialize() *App {
+
+	// Initialize Logging
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
+	wg := sync.WaitGroup{}
+
+	// Initialize Config with default values
 	appConfig := config.AppConfig{
 		KubeAccessType: "incluster",
 		KubeConfigPath: ".kube/config",
@@ -23,16 +38,28 @@ func initialize() *App {
 		MetricsPort:    8081,
 	}
 
+	// Initialize App
 	app := &App{
-		Name:       appName,
-		ConfigPath: "./config/configuration.json",
-		Config:     &appConfig,
+		Name:          appName,
+		ConfigPath:    "./config/configuration.json",
+		Config:        &appConfig,
+		Wait:          &wg,
+		ErrorChan:     make(chan error),
+		ErrorChanDone: make(chan bool),
+		InfoLog:       infoLog,
+		ErrorLog:      errorLog,
 	}
 
 	// load config from file
 	app.Config = &config.AppConfig{}
 	app.Config.LoadJSONConfiguration(app.ConfigPath)
 	app.Config.LoadENVConfiguration()
+
+	// listen for SIGINT and SIGTERM signals and call the shutdown function
+	go app.listenForShutdown()
+
+	// listen for errors on the error channel and log them
+	go app.listenForErrors()
 
 	//@toto defaults werden überschrieben
 	app.Config.TemplatePath = "./web/app/templates"
@@ -68,4 +95,58 @@ func initialize() *App {
 func run(app *App) {
 
 	app.Webserver.Start()
+}
+
+// listenForErrors listens for errors on the error channel and logs them
+func (app *App) listenForErrors() {
+	for {
+		select {
+		case err := <-app.ErrorChan:
+			app.ErrorLog.Println(err)
+		case <-app.ErrorChanDone:
+			return
+		}
+	}
+}
+
+// listenForShutdown listens for SIGINT and SIGTERM signals and calls the shutdown function
+func (app *App) listenForShutdown() {
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	app.shutdown()
+	os.Exit(0)
+}
+
+// shutdown performs cleanup tasks and closes channels
+func (app *App) shutdown() {
+	// perform an cleanup tasks
+	app.InfoLog.Println("Cleanup")
+
+	// block until waitgroup is empty
+	app.Wait.Wait()
+
+	// close channels
+	app.ErrorChanDone <- true
+
+	app.InfoLog.Println(("closing channels and shutting down..."))
+
+	close(app.ErrorChan)
+	close(app.ErrorChanDone)
+
+	// Kontext mit Timeout für das Herunterfahren des Servers erstellen
+	//ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	//defer cancel()
+
+	ctx := context.Background()
+
+	app.InfoLog.Println("stopping metrics server...")
+	app.Webserver.echoPrometheus.Shutdown(ctx)
+	app.InfoLog.Println("metrics server stopped")
+
+	app.InfoLog.Println("stopping webserver...")
+	app.Webserver.echoWebserver.Shutdown(ctx)
+	app.InfoLog.Println("webserver stopped")
+
 }

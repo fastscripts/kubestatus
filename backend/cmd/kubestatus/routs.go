@@ -29,4 +29,7 @@ func (a *App) addRoutes() {
 	a.Webserver.echoWebserver.GET("/api/v1/nodes", func(c echo.Context) error {
 		return handler.NodeCount(c, a.Kube)
 	})
+	a.Webserver.echoWebserver.GET("/usage.html", func(c echo.Context) error {
+		return handler.UsagePage(c, a.Kube)
+	})
 }

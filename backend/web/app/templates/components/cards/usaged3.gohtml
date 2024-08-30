@@ -1,0 +1,46 @@
+{{ define "usaged3" }}
+        <div class="p-4 bg-white border rounded-xl text-gray-800  drop-shadow-lg ">
+            <h4 class="font-bold text-xl m-2">Usage Window (d3js)</h4>
+
+                <div x-data="{open: false}"> 
+                    <button x-on:click="open = ! open" type="button"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Select type
+                            <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                            </svg>
+                    </button>
+
+                    <!-- Dropdown menu -->
+                    <div x-show="open" class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                        <ul x-on:click="open = ! open" class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownInformationButton">
+                            <li>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" id="Memory" >Memory Usage</a>
+                            </li>
+                            <li class="py-1.5 border-b">
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" id="Cpu" >Cpu Usage</a>
+                            </li>
+                            <li>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" id="memRequested">Memory Reservation</a>
+                            </li>
+                            <li class="py-1.5 border-b">
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" id="cpuRequested">Cpu Reservation</a>
+                            </li>
+                            <li>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"  id="memLimit">Memory Limit</a>
+                            </li>
+                            <li>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"  id="cpuLimit">Cpu Limit</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+
+            <div id="d3usageTreeChart" >
+            
+            </div>
+      
+            
+        </div>
+{{ end }}

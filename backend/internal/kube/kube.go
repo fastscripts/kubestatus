@@ -2,10 +2,13 @@ package kube
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
+	"log"
 	"path/filepath"
+	"regexp"
 	"strconv"
 
 	"ext-github.swm.de/SWM/rancher-sources/kubestatus/internal/models"
@@ -134,4 +137,313 @@ func (k *Kube) GetStatus() (*models.ClusterStatus, error) {
 
 	return &clusterStatus, nil
 
+}
+
+func (k *Kube) FetchMemoryUsage() (*[]byte, error) {
+
+	var pods models.PodMetricsList
+	data, err := k.Client.RESTClient().Get().AbsPath("apis/metrics.k8s.io/v1beta1/pods").DoRaw(context.TODO())
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+	err = json.Unmarshal(data, &pods)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+	//convert podmetrics do data
+
+	namespacemap := make(map[string]models.Namespace)
+
+	for _, m := range pods.Items {
+
+		var pod models.Pod
+		pod.Name = m.Metadata.Name
+
+		// wenn der namespace schon gefunden wurde
+		if _, ok := namespacemap[m.Metadata.Namespace]; ok {
+
+		} else {
+			var namespaces models.Namespace
+			namespaces.Name = m.Metadata.Namespace
+			namespacemap[m.Metadata.Namespace] = namespaces
+		}
+
+		for _, containerData := range m.Containers {
+
+			containerName := containerData.Name
+			memString := containerData.Usage.Memory
+			cpuString := containerData.Usage.CPU
+			rx := regexp.MustCompile("[0-9]*") // regex Compilieren
+
+			bytea := rx.Find([]byte(memString)) // byte[] mit allen matches des regex
+			dstring := string(bytea[:])         // string aus dem byte[]
+			sumMem, _ := strconv.Atoi(dstring)  // int aus dem string machen
+
+			bytea = rx.Find([]byte(cpuString)) // byte[] mit allen matches des regex
+			dstring = string(bytea[:])         // string aus dem byte[]
+			sumCpu, _ := strconv.Atoi(dstring) // int aus dem string machen
+
+			var container = models.Container{
+				Name: containerName,
+				MEM:  sumMem,
+				CPU:  sumCpu,
+			}
+
+			pod.Containers = append(pod.Containers, container)
+
+		}
+		namespace := namespacemap[m.Metadata.Namespace]
+		namespace.Pods = append(namespace.Pods, pod)
+		namespacemap[m.Metadata.Namespace] = namespace
+
+	}
+
+	var Payload models.Data
+
+	for _, element := range namespacemap {
+		Payload.Namespaces = append(Payload.Namespaces, element)
+	}
+
+	/* 	datafile, err := json.MarshalIndent(Payload, "", "\t")
+	   	if err != nil {
+	   		log.Println(err.Error())
+	   		return nil, err
+	   	} */
+
+	// write json file
+	/* 	err = os.WriteFile("static/data.json", datafile, 0644)
+	   	if err != nil {
+	   		log.Println(err.Error())
+	   		return nil, err
+	   	}
+	*/
+	returndata, _ := json.MarshalIndent(Payload, "", "\t")
+	return &returndata, nil
+
+}
+
+func (k *Kube) FetchCpuUsage() (*[]byte, error) {
+
+	var pods models.PodMetricsList
+	data, err := k.Client.RESTClient().Get().AbsPath("apis/metrics.k8s.io/v1beta1/pods").DoRaw(context.TODO())
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+	err = json.Unmarshal(data, &pods)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+	//convert podmetrics do data
+
+	namespacemap := make(map[string]models.Namespace)
+
+	for _, m := range pods.Items {
+
+		var pod models.Pod
+		pod.Name = m.Metadata.Name
+
+		// wenn der namespace schon gefunden wurde
+		if _, ok := namespacemap[m.Metadata.Namespace]; ok {
+
+		} else {
+			var namespaces models.Namespace
+			namespaces.Name = m.Metadata.Namespace
+			namespacemap[m.Metadata.Namespace] = namespaces
+		}
+
+		for _, containerData := range m.Containers {
+
+			containerName := containerData.Name
+			memString := containerData.Usage.Memory
+			cpuString := containerData.Usage.CPU
+			rx := regexp.MustCompile("[0-9]*") // regex Compilieren
+
+			bytea := rx.Find([]byte(memString)) // byte[] mit allen matches des regex
+			dstring := string(bytea[:])         // string aus dem byte[]
+			sumMem, _ := strconv.Atoi(dstring)  // int aus dem string machen
+
+			bytea = rx.Find([]byte(cpuString)) // byte[] mit allen matches des regex
+			dstring = string(bytea[:])         // string aus dem byte[]
+			sumCpu, _ := strconv.Atoi(dstring) // int aus dem string machen
+
+			var container = models.Container{
+				Name: containerName,
+				MEM:  sumMem,
+				CPU:  sumCpu,
+			}
+
+			pod.Containers = append(pod.Containers, container)
+
+		}
+		namespace := namespacemap[m.Metadata.Namespace]
+		namespace.Pods = append(namespace.Pods, pod)
+		namespacemap[m.Metadata.Namespace] = namespace
+
+	}
+
+	var Payload models.Data
+
+	for _, element := range namespacemap {
+		Payload.Namespaces = append(Payload.Namespaces, element)
+	}
+	/*
+		datafile, err := json.MarshalIndent(Payload, "", "\t")
+		if err != nil {
+			log.Println(err.Error())
+			return nil, err
+		}
+	*/
+	/* 	// write json file
+	   	err = os.WriteFile("static/data.json", datafile, 0644)
+	   	if err != nil {
+	   		log.Println(err.Error())
+	   		return nil, err
+	   	} */
+
+	returndata, _ := json.MarshalIndent(Payload, "", "\t")
+	return &returndata, nil
+
+}
+
+func (k *Kube) FetchLimitsAndReuests() (*[]byte, error) {
+
+	var pods models.PodList
+	data, err := k.Client.RESTClient().Get().AbsPath("api/v1/pods").DoRaw(context.TODO())
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	err = json.Unmarshal(data, &pods)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	// convert Podlist to data.json
+
+	namespacemap := make(map[string]models.Namespace)
+
+	for _, item := range pods.Items {
+
+		var pod models.Pod
+		pod.Name = item.Metadata.Name
+
+		// füge den Namespace der Namespacemap hinzu
+		if _, ok := namespacemap[item.Metadata.Namespace]; ok {
+
+		} else {
+			var namespaces models.Namespace
+			namespaces.Name = item.Metadata.Namespace
+			namespacemap[item.Metadata.Namespace] = namespaces
+		}
+
+		for _, containerData := range item.Spec.Containers {
+			containerName := containerData.Name
+
+			// Angaben sind in mCPU oder MByte daher umwandeln
+			memRequestedString := containerData.Resources.Requests.Memory
+			cpuRequestedString := containerData.Resources.Requests.CPU
+			memLimitedString := containerData.Resources.Limits.Memory
+			cpuLimitedString := containerData.Resources.Limits.CPU
+
+			// Setze leere Strings auf "0"
+			if memRequestedString == "" {
+				memRequestedString = "0Mi"
+			}
+			if cpuRequestedString == "" {
+				cpuRequestedString = "0m"
+			}
+			if memLimitedString == "" {
+				memLimitedString = "0Mi"
+			}
+			if cpuLimitedString == "" {
+				cpuLimitedString = "0m"
+			}
+
+			//log.Println(containerName + ": " + memRequestedString + ", " + memRequestedString + ", " + memRequestedString + ", " + cpuLimitedString)
+
+			rx := regexp.MustCompile("[0-9]*")           // regex Compilieren
+			bytea := rx.Find([]byte(memRequestedString)) // byte[] mit allen matches des regex
+			dstring := string(bytea[:])                  // string aus dem byte[]
+			memRequested, _ := strconv.Atoi(dstring)     // int aus dem string machen
+
+			// Wenn Angabe in Gi dann umrechnen in Mb
+			rxsearch := regexp.MustCompile("Gi")
+			res := rxsearch.MatchString(memRequestedString)
+			//res, _ := regexp.MatchString(`Gi`, memRequestedString)
+			if res {
+				memRequested = memRequested * 1024
+			}
+
+			bytea = rx.Find([]byte(cpuRequestedString)) // byte[] mit allen matches des regex
+			dstring = string(bytea[:])                  // string aus dem byte[]
+			cpuRequested, _ := strconv.Atoi(dstring)    // int aus dem string machen
+
+			// Wenn nicht in MiliCPU dann umrechnen
+			res, _ = regexp.MatchString(`m`, cpuRequestedString)
+			if !res {
+				cpuRequested = cpuRequested * 1000
+			}
+
+			bytea = rx.Find([]byte(memLimitedString)) // byte[] mit allen matches des regex
+			dstring = string(bytea[:])                // string aus dem byte[]
+			memLimited, _ := strconv.Atoi(dstring)    // int aus dem string machen
+
+			// Wenn Angabe in Gi dann umrechnen in Mb
+			res, _ = regexp.MatchString(`Gi`, memLimitedString)
+			if res {
+				memLimited = memLimited * 1024
+			}
+
+			bytea = rx.Find([]byte(cpuLimitedString)) // byte[] mit allen matches des regex
+			dstring = string(bytea[:])                // string aus dem byte[]
+			cpuLimited, _ := strconv.Atoi(dstring)    // int aus dem string machen
+
+			// Wenn nicht in MiliCPU dann umrechnen
+			res, _ = regexp.MatchString(`m`, cpuLimitedString)
+			if !res {
+				cpuLimited = cpuLimited * 1000
+			}
+
+			var container = models.Container{
+				Name:       containerName,
+				MEMRequest: memRequested,
+				CPURequest: cpuRequested,
+				MEMLimit:   memLimited,
+				CPULimit:   cpuLimited,
+			}
+			//log.Println(container)
+
+			pod.Containers = append(pod.Containers, container)
+		}
+		namespace := namespacemap[item.Metadata.Namespace]
+		namespace.Pods = append(namespace.Pods, pod)
+		namespacemap[item.Metadata.Namespace] = namespace
+	}
+	var Payload models.Data
+
+	for _, element := range namespacemap {
+		Payload.Namespaces = append(Payload.Namespaces, element)
+	}
+
+	/* 	datafile, err := json.MarshalIndent(Payload, "", "\t")
+	   	if err != nil {
+	   		log.Println(err.Error())
+	   		return nil, err
+	   	} */
+
+	/* 	// write json file
+	   	err = ioutil.WriteFile("static/data.json", datafile, 0644)
+	   	if err != nil {
+	   		log.Println(err.Error())
+	   		return nil, err
+	   	} */
+
+	returndata, _ := json.MarshalIndent(Payload, "", "\t")
+	return &returndata, nil
 }
