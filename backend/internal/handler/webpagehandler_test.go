@@ -40,10 +40,11 @@ func TestHomePage(t *testing.T) {
 	c := e.NewContext(req, rec)
 
 	// Renderer für Tests registrieren
-	renderer := &TemplateRenderer{
+	/* 	renderer := &TemplateRenderer{
 		templates: template.Must(template.ParseGlob("../../web/app/templates/*.gohtml")), // Pfad zu deinen Templates
-	}
-	e.Renderer = renderer
+	} */
+	//e.Renderer = renderer
+	e.Renderer = &TemplateRenderer{}
 
 	// Call the handler
 	if assert.NoError(t, HomePage(c, nil)) {
