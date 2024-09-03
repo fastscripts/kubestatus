@@ -2,10 +2,8 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"ext-github.swm.de/SWM/rancher-sources/kubestatus/internal/config"
@@ -19,8 +17,8 @@ var testData = []struct {
 	errorExpected bool
 	errorMessage  string
 }{
-	{"successful", "test.page.gohtml", false, "error rendering go template"},
-	{"noTemplate", "test.page.gohtml", true, "randering non-existing go template"},
+	{"successful", "test", false, "error rendering go template"},
+	{"noTemplate", "failtes", true, "randering non-existing go template"},
 }
 
 var data = []struct {
@@ -30,25 +28,7 @@ var data = []struct {
 	{"Hello World"},
 }
 
-// Config Mock
-/*
-var app struct{
-	Config struct {
-		Devmode bool
-		TemplatePath string
-	}
-	TemplateCache map[string]*template.Template
-}
-*/
-// test for render function in renderer.go
-func TestRender(t *testing.T) {
-
-	pwd, ma := os.Getwd()
-	if ma != nil {
-		fmt.Println(ma)
-		os.Exit(1)
-	}
-	fmt.Println(pwd)
+func Test_Render(t *testing.T) {
 
 	appConfig := config.AppConfig{
 		KubeAccessType: "incluster",
@@ -63,38 +43,25 @@ func TestRender(t *testing.T) {
 	app.Config.Devmode = true
 
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/test", nil)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
 
-	renderer := &Renderer{}
+	for _, tt := range testData {
+		req := httptest.NewRequest(http.MethodGet, "/test", nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
 
-	var buf bytes.Buffer
-	err := renderer.Render(&buf, "test", data, c)
+		renderer := &Renderer{}
 
-	assert.NoError(t, err)
+		var buf bytes.Buffer
+		err := renderer.Render(&buf, tt.template, data, c)
 
-	/*
-
-		for _, tt := range testData {
-			t.Run(tt.name, func(t *testing.T) {
-				r := &Renderer{}
-				b := new(bytes.Buffer)
-				// new echo context
-				c := echo.New().NewContext(nil, nil)
-				err := r.Render(b, tt.template, data, c)
-				if tt.errorExpected {
-					if err == nil {
-						t.Error(tt.errorMessage)
-					}
-				} else {
-					if err != nil {
-						t.Error(tt.errorMessage)
-					}
-				}
-			})
+		if tt.errorExpected {
+			assert.Error(t, err, tt.errorMessage)
+			continue
 		}
-	*/
+		if !tt.errorExpected {
+			assert.NoError(t, err)
+		}
+	}
 }
 
 func Test_NewTemplateCache(t *testing.T) {
